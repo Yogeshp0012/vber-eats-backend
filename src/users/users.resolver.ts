@@ -46,7 +46,7 @@ export class UserResolver {
 
   @Mutation(() => loginAccountResponseDto)
   async login(
-    @Args('input') loginInput: loginAccountRequestDto,
+    @Args('request') loginInput: loginAccountRequestDto,
   ): Promise<{ status: boolean; errorMessage?: string; token?: string }> {
     try {
       return await this.userService.login(loginInput);
