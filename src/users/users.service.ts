@@ -61,9 +61,7 @@ export class UsersService {
           errorMessage: 'Incorrect Password.',
         };
       }
-      const token = this.jwtService.sign(
-        { id: user.id }
-      );
+      const token = this.jwtService.sign({ id: user.id });
       return {
         status: true,
         token,
@@ -74,5 +72,13 @@ export class UsersService {
         errorMessage,
       };
     }
+  }
+
+  async findUserById(id: number): Promise<UserEntity> {
+    return await this.userRepo.findOne({
+      where: {
+        id: Equal(id),
+      },
+    });
   }
 }

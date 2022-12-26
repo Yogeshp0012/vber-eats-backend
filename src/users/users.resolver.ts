@@ -2,7 +2,7 @@ import {
   createAccountRequestDto,
   createAccountResponseDto,
 } from './dtos/createAccount.dto';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserEntity } from './entities/users.entity';
 import { UsersService } from './users.service';
 import {
@@ -55,6 +55,15 @@ export class UserResolver {
         status: false,
         errorMessage,
       };
+    }
+  }
+
+  @Query(() => UserEntity)
+  currentUser(@Context() context) {
+    if (!context.user) {
+      return;
+    } else {
+      return context.user;
     }
   }
 }
