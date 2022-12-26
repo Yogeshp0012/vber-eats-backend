@@ -1,3 +1,8 @@
 {
-    "dotenv.enableAutocloaking": false
+    "dotenv.enableAutocloaking": true,
+    "cSpell.words": [
+        "dtos",
+        "nestjs",
+        "typeorm"
+    ]
 }
