@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
 import { UserEntity } from './users/entities/users.entity';
 import { JwtModule } from './jwt/jwt.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { JwtModule } from './jwt/jwt.module';
     UsersModule,
     CommonModule,
     JwtModule.forRoot({ privateKey: process.env.TOKEN_SECRET }),
+    AuthModule,
   ],
   controllers: [],
   providers: [],

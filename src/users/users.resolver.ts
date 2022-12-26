@@ -2,22 +2,20 @@ import {
   createAccountRequestDto,
   createAccountResponseDto,
 } from './dtos/createAccount.dto';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UserEntity } from './entities/users.entity';
 import { UsersService } from './users.service';
 import {
   loginAccountRequestDto,
   loginAccountResponseDto,
 } from './dtos/loginAccount.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthUser } from 'src/auth/auth-user.decorator';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
   constructor(private readonly userService: UsersService) {}
-
-  @Query(() => Boolean)
-  hi() {
-    return true;
-  }
 
   @Mutation(() => createAccountResponseDto)
   async createAccount(
@@ -59,11 +57,8 @@ export class UserResolver {
   }
 
   @Query(() => UserEntity)
-  currentUser(@Context() context) {
-    if (!context.user) {
-      return;
-    } else {
-      return context.user;
-    }
+  @UseGuards(AuthGuard)
+  currentUser(@AuthUser() authUser) {
+    return authUser;
   }
 }
