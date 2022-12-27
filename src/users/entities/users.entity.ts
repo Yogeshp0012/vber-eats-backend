@@ -5,7 +5,11 @@ import {
   registerEnumType,
 } from '@nestjs/graphql';
 import { CoreEntity } from './../../common/entities/core.entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+} from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { InternalServerErrorException } from '@nestjs/common';
 import { IsEmail, IsEnum } from 'class-validator';

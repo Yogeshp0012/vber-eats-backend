@@ -12,6 +12,10 @@ import {
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthUser } from 'src/auth/auth-user.decorator';
+import {
+  UserProfileRequestDto,
+  UserProfileResponseDto,
+} from './dtos/user-profile.dto';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -60,5 +64,29 @@ export class UserResolver {
   @UseGuards(AuthGuard)
   currentUser(@AuthUser() authUser) {
     return authUser;
+  }
+
+  @Query(() => UserProfileResponseDto)
+  @UseGuards(AuthGuard)
+  async getUserProfileDetails(
+    @Args() userProfileRequest: UserProfileRequestDto,
+  ): Promise<UserProfileResponseDto> {
+    try {
+      const userProfile = await this.userService.findUserById(
+        userProfileRequest.userId,
+      );
+      if (!userProfile) {
+        throw Error();
+      }
+      return {
+        status: true,
+        userProfile,
+      };
+    } catch (error) {
+      return {
+        errorMessage: 'The requested user profile is not found',
+        status: false,
+      };
+    }
   }
 }
