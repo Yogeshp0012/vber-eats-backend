@@ -1,3 +1,4 @@
+import { VerificationEntity } from './../users/entities/verification.entity';
 import { UsersService } from './../users/users.service';
 import { CONFIG_OPTIONS } from './jwt.constants';
 import { JwtModuleOptions } from './interfaces/jwt-module-options.interface';
@@ -11,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 export class JwtModule {
   static forRoot(options: JwtModuleOptions): DynamicModule {
     return {
-      imports: [TypeOrmModule.forFeature([UserEntity])],
+      imports: [TypeOrmModule.forFeature([UserEntity, VerificationEntity])],
       module: JwtModule,
       exports: [JwtService],
       providers: [

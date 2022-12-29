@@ -15,6 +15,7 @@ import { CommonModule } from './common/common.module';
 import { UserEntity } from './users/entities/users.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
+import { VerificationEntity } from './users/entities/verification.entity';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: true,
       logging: true,
-      entities: [UserEntity],
+      entities: [UserEntity, VerificationEntity],
       subscribers: [],
       migrations: [],
     }),

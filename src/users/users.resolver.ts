@@ -16,6 +16,10 @@ import {
   UserProfileRequestDto,
   UserProfileResponseDto,
 } from './dtos/user-profile.dto';
+import {
+  EditProfileDtoResponse,
+  EditProfileDtoRequest,
+} from './dtos/edit-profile.dto';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -86,6 +90,26 @@ export class UserResolver {
       return {
         errorMessage: 'The requested user profile is not found',
         status: false,
+      };
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => EditProfileDtoResponse)
+  async editUserProfile(
+    @AuthUser() authUser,
+    @Args('request') editProfileRequest: EditProfileDtoRequest,
+  ): Promise<EditProfileDtoResponse> {
+    try {
+      await this.userService.editProfile(authUser.id, editProfileRequest);
+      return {
+        status: true,
+        errorMessage: '',
+      };
+    } catch (errorMessage) {
+      return {
+        status: false,
+        errorMessage,
       };
     }
   }

@@ -1,4 +1,4 @@
-import { ConfigService } from '@nestjs/config';
+import { VerificationEntity } from './entities/verification.entity';
 import { createAccountRequestDto } from './dtos/createAccount.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
@@ -6,13 +6,15 @@ import { Equal, Repository } from 'typeorm';
 import { UserEntity } from './entities/users.entity';
 import { loginAccountRequestDto } from './dtos/loginAccount.dto';
 import { JwtService } from 'src/jwt/jwt.service';
+import { EditProfileDtoRequest } from './dtos/edit-profile.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
-    private readonly configService: ConfigService,
+    @InjectRepository(VerificationEntity)
+    private readonly verificationRepo: Repository<VerificationEntity>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -30,7 +32,12 @@ export class UsersService {
       if (exists) {
         return [false, 'User already exists!'];
       }
-      await this.userRepo.save(this.userRepo.create({ email, password, role }));
+      const currentUser = await this.userRepo.save(
+        this.userRepo.create({ email, password, role }),
+      );
+      await this.verificationRepo.save(
+        this.verificationRepo.create({ userToBeVerified: currentUser }),
+      );
       return [true];
     } catch (e) {
       return [false, 'The requested user account was not created.'];
@@ -80,5 +87,20 @@ export class UsersService {
         id: Equal(id),
       },
     });
+  }
+
+  async editProfile(id: number, { email, password }: EditProfileDtoRequest) {
+    const currentUser: UserEntity = await this.findUserById(id);
+    if (email) {
+      currentUser.email = email;
+    }
+    if (password) {
+      currentUser.password = password;
+    }
+    currentUser.isVerified = false;
+    await this.verificationRepo.save(
+      this.verificationRepo.create({ userToBeVerified: currentUser }),
+    );
+    return await this.userRepo.save(currentUser);
   }
 }
