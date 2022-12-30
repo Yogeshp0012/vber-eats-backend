@@ -20,6 +20,10 @@ import {
   EditProfileDtoResponse,
   EditProfileDtoRequest,
 } from './dtos/edit-profile.dto';
+import {
+  VerifyEmailRequestDto,
+  VerifyEmailResponseDto,
+} from './dtos/verify-email.dto';
 
 @Resolver(() => UserEntity)
 export class UserResolver {
@@ -105,6 +109,24 @@ export class UserResolver {
       return {
         status: true,
         errorMessage: '',
+      };
+    } catch (errorMessage) {
+      return {
+        status: false,
+        errorMessage,
+      };
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => VerifyEmailResponseDto)
+  async verifyEmail(
+    @Args('request') verifyEmailRequest: VerifyEmailRequestDto,
+  ) {
+    try {
+      await this.userService.verifyEmail(verifyEmailRequest.verificationCode);
+      return {
+        status: true,
       };
     } catch (errorMessage) {
       return {

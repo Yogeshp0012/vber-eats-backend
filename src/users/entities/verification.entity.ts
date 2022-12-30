@@ -12,7 +12,7 @@ export class VerificationEntity extends CoreEntity {
   @Field(() => String)
   verificationCode: string;
 
-  @OneToOne(() => UserEntity)
+  @OneToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   userToBeVerified: UserEntity;
 

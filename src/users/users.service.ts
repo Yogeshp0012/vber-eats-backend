@@ -54,6 +54,7 @@ export class UsersService {
         where: {
           email: Equal(email),
         },
+        select: ['password', 'id'],
       });
       if (!user) {
         return {
@@ -102,5 +103,24 @@ export class UsersService {
       this.verificationRepo.create({ userToBeVerified: currentUser }),
     );
     return await this.userRepo.save(currentUser);
+  }
+
+  async verifyEmail(verificationCode: string): Promise<boolean> {
+    try {
+      const verification = await this.verificationRepo.findOne({
+        where: {
+          verificationCode: Equal(verificationCode as string),
+        },
+        relations: ['userToBeVerified'],
+      });
+      if (verification) {
+        verification.userToBeVerified.isVerified = true;
+        this.userRepo.save(verification.userToBeVerified);
+      }
+      throw new Error();
+    } catch (error) {
+      console.log('ERROR');
+      return false;
+    }
   }
 }
